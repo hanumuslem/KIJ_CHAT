@@ -3,6 +3,7 @@ package kij_chat_client;
 import java.security.NoSuchAlgorithmException; 
 import java.io.IOException;
 import java.net.Socket;
+import java.security.Key;
 import static javafx.application.Platform.exit;
 
 /** original ->http://www.dreamincode.net/forums/topic/262304-simple-client-and-server-chat-program/
@@ -14,12 +15,15 @@ public class Main {
 
 	private final static int PORT = 6677;//SET A CONSTANT VARIABLE PORT
 	private final static String HOST = "localhost";//SET A CONSTANT VARIABLE HOST
-	
+	public static String username=null;
+        public static String password=null;
+        public static Key SPuKey=null;
+        public static Key CPrKey=null;
 	public static void main(String[] args) throws IOException
 	{
 		try 
 		{
-			System.out.println(simple_MD5.MD5("budi"));
+			//System.out.println(simple_MD5.MD5("budi"));
 			
 			Socket s = new Socket(HOST, PORT);//CONNECT TO THE SERVER
 			

@@ -45,12 +45,12 @@ public class Write implements Runnable {
 //                    input = String.join(" ", list);
                     
                     String[] tes = input.split(" ");
-                    String username=tes[1];
-                    String password=simple_MD5.MD5(tes[2]);
+                    Main.username=tes[1];
+                    Main.password=simple_MD5.MD5(tes[2]);
                     
-                    byte[] key = password.getBytes();
+                    byte[] key = Main.password.getBytes();
                     RC4 rc4 = new RC4(key);
-                    String cipherText = rc4.encrypt(username);
+                    String cipherText = rc4.encrypt(Main.username);
                     
                     input=tes[0] + " " + cipherText;
                     System.out.println(input);

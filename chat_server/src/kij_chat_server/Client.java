@@ -25,6 +25,7 @@ public class Client implements Runnable{
 	private Socket socket;//SOCKET INSTANCE VARIABLE
         private String username;
         private boolean login = false;
+        private String password;
         
         private ArrayList<Pair<Socket,String>> _loginlist;
         private ArrayList<Pair<String,String>> _userlist;
@@ -68,7 +69,7 @@ public class Client implements Runnable{
                                                 RC4 rc4 = new RC4(key);
                                                 String decrypted = rc4.decrypt(vals[1]);
                                                 if(x.getFirst().equals(decrypted)==true){
-                                                    
+                                                    password = x.getSecond();
                                                     flag=true;
                                                 }
                                             }
@@ -93,42 +94,17 @@ public class Client implements Runnable{
                                                     byte[] array2 = privatKey.getEncoded();
                                                     String Prkey = encoder.encode(array2);
                                                     
-/*                                                    //public to string
-                                                    byte[] array = publicKey.getEncoded();
-                                                    BASE64Encoder encoder = new BASE64Encoder();
-                                                    String Pkey = encoder.encode(array);
-                                                    System.out.println(Pkey);
-                                                    
-                                                  //Convert PublicKeyString to Byte Stream
-                                                    BASE64Decoder decoder = new BASE64Decoder();
-                                                    byte[] sigBytes2 = decoder.decodeBuffer(Pkey);
-                                                    // Convert the public key bytes into a PublicKey object
-                                                    X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(sigBytes2);
-                                                    KeyFactory keyFact = KeyFactory.getInstance("RSA");
-                                                    Key pubKey2 = keyFact.generatePublic(x509KeySpec);
-                                                    System.out.println(pubKey2);
-*/                                                    
-//                                                    //public to string
-//                                                    byte[] array = privatKey.getEncoded();
-//                                                    BASE64Encoder encoder = new BASE64Encoder();
-//                                                    String Pkey = encoder.encode(array);
-//                                                    System.out.println(Pkey);
-//                                                    
-//                                                  //Convert PublicKeyString to Byte Stream
-//                                                    BASE64Decoder decoder = new BASE64Decoder();
-//                                                    byte[] sigBytes2 = decoder.decodeBuffer(Pkey);
-//                                                    // Convert the public key bytes into a PublicKey object
-//                                                    PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(sigBytes2);
-//                                                    KeyFactory keyFact = KeyFactory.getInstance("RSA");
-//                                                    Key privKey2 = keyFact.generatePrivate(pkcs8KeySpec);
-//                                                    System.out.println(privKey2);
+
 
                                                     
                                                     Database.updatePublic(this.username,Pukey);
                                                     
                                                     System.out.println("Users count: " + this._loginlist.size());
-                                                    out.println("SUCCESS login");
-                                                    
+                                                    byte[] key_ = password.getBytes();                                                
+                                                    RC4 rc4 = new RC4(key_);
+                                                    String message = Main.SPuKey_+"\n\r\n\r"+Prkey;
+                                                    String cipherText = rc4.encrypt(message);
+                                                    out.println("SUCCESS login "+cipherText);
                                                     out.flush();
                                                 } else {
                                                     out.println("FAIL login");
