@@ -105,8 +105,7 @@ public class Client implements Runnable{
                                                     System.out.println("Users count: " + this._loginlist.size());
                                                     byte[] key_ = password.getBytes();                                                
                                                     RC4 rc4 = new RC4(key_);
-                                                    String message = Main.SPuKey_+"\n\r\n\r"+Prkey;
-                                                    String cipherText = rc4.encrypt(message);
+                                                    String cipherText = rc4.encrypt(Prkey);
                                                     out.println("SUCCESS login "+cipherText);
                                                     out.flush();
                                                 } else {

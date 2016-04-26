@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PublicKey;
 import java.util.ArrayList;
-import sun.misc.BASE64Encoder;
 
 /** original ->http://www.dreamincode.net/forums/topic/262304-simple-client-and-server-chat-program/
  * 
@@ -23,9 +18,6 @@ public class Main {
     public static final ArrayList<Pair<String,String>> _userlist = user.getUserList();
     public static final Group group = new Group();
     public static final ArrayList<Pair<String,String>> _grouplist = group.getGroupList();
-    public static Key SPuKey = null;
-    public static Key SPrKey = null;
-    public static String SPuKey_ = null;
  
 
 	public static void main(String[] args) throws IOException {
@@ -36,15 +28,6 @@ public class Main {
 			ServerSocket server = new ServerSocket(PORT); //SET PORT NUMBER
 			System.out.println("Waiting for clients...");//AT THE START PRINT THIS
 
-                        String algorithm = "RSA";
-                        BASE64Encoder encoder = new BASE64Encoder();
-                        KeyPair keyPair = KeyPairGenerator.getInstance(algorithm).generateKeyPair();
-                        SPuKey = keyPair.getPublic();
-                        SPrKey = keyPair.getPrivate();                           
-                        byte[] array1 = SPuKey.getEncoded();
-                        SPuKey_ = encoder.encode(array1);
-                        //System.out.println(SPuKey);
-                        //System.out.println(SPrKey);
 			while (true)//WHILE THE PROGRAM IS RUNNING
 			{					
 				

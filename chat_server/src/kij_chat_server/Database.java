@@ -73,7 +73,7 @@ public class Database {
            statement.setString(2, _username);
            
            
-           System.out.println(statement);
+           //System.out.println(statement);
            statement.executeUpdate();
                       
 
@@ -91,7 +91,7 @@ public class Database {
            PreparedStatement statement=conn.prepareStatement(sql);
            statement.setString(1, _username);
            ResultSet result = statement.executeQuery();
-           System.out.println(_username);
+           //System.out.println(_username);
            int count=0;
                while (result.next()){
                    count++;

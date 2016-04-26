@@ -17,7 +17,6 @@ public class Main {
 	private final static String HOST = "localhost";//SET A CONSTANT VARIABLE HOST
 	public static String username=null;
         public static String password=null;
-        public static Key SPuKey=null;
         public static Key CPrKey=null;
 	public static void main(String[] args) throws IOException
 	{

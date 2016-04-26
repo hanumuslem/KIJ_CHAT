@@ -50,21 +50,15 @@ public class Read implements Runnable {
                                                 byte[] key = Main.password.getBytes();
                                                 RC4 rc4 = new RC4(key);
                                                 String decrypted = rc4.decrypt(input.split(" ")[2]);
-                                                
-                                                byte[] sigBytes1 = decoder.decodeBuffer(decrypted.split("\n\r\n\r")[0]);
-                                                byte[] sigBytes2 = decoder.decodeBuffer(decrypted.split("\n\r\n\r")[1]);
+                                                //System.out.println(decrypted);
+                                                byte[] sigBytes2 = decoder.decodeBuffer(decrypted);
                                                 
                                                 
                                                 KeyFactory keyFact = KeyFactory.getInstance("RSA");
-                                                
-                                                // Convert the public key bytes into a PublicKey object
-                                                X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(sigBytes1);
-                                                Main.SPuKey = keyFact.generatePublic(x509KeySpec);
-                                                System.out.println(Main.SPuKey);
-                                                
+                                                                                                
                                                 PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(sigBytes2);
                                                 Main.CPrKey = keyFact.generatePrivate(pkcs8KeySpec);
-                                                System.out.println(Main.CPrKey);
+                                                //System.out.println(Main.CPrKey);
                                                 
                                                 log.clear();
                                                 log.add("true");
