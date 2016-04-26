@@ -185,24 +185,27 @@ public class Client implements Runnable{
                                         // param CG <groupName>
                                         if (input.split(" ")[0].toLowerCase().equals("cg") == true) {
                                             String[] vals = input.split(" ");
-                                            
+                                            String name_source= this.username;
+                                            byte[] key_ = password.getBytes();
                                             boolean exist = false;
-                                            
+                                            //decrypted
+                                             RC4 rc4 = new RC4(key_);
+                                             String name_group = rc4.decrypt(vals[1]);
                                             for(Pair<String, String> selGroup : _grouplist) {
-                                                if (selGroup.getFirst().equals(vals[1])) {
+                                                if (selGroup.getFirst().equals(name_group) && selGroup.getSecond().equals(name_source)) {
                                                     exist = true;
                                                 }
                                             }
                                             
                                             if(exist == false) {
                                                 Group group = new Group();
-                                                int total = group.updateGroup(vals[1], this.username, _grouplist);
+                                                int total = group.updateGroup(name_group, this.username, _grouplist);
                                                 System.out.println("total group: " + total);
-                                                System.out.println("cg " + vals[1] + " by " + this.username + " successed.");
+                                                System.out.println("cg " + name_group + " by " + this.username + " successed.");
                                                 out.println("SUCCESS cg");
                                                 out.flush();
                                             } else {
-                                                System.out.println("cg " + vals[1] + " by " + this.username + " failed.");
+                                                System.out.println("cg " + name_group + " by " + this.username + " failed.");
                                                 out.println("FAIL cg");
                                                 out.flush();
                                             }
@@ -221,17 +224,26 @@ public class Client implements Runnable{
                                             }
                                             
                                             if (exist == true) {
+                                                String CsPubkey = Database.GetCPu(this.username);
                                                 for(Pair<String, String> selGroup : _grouplist) {
                                                     if (selGroup.getFirst().equals(vals[1])) {
                                                         for(Pair<Socket, String> cur : _loginlist) {
                                                             if (cur.getSecond().equals(selGroup.getSecond()) && !cur.getFirst().equals(socket)) {
                                                                 PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
+                                                                
                                                                 String messageOut = "";
-                                                                for (int j = 2; j<vals.length; j++) {
-                                                                    messageOut += vals[j] + " ";
-                                                                }
-                                                                System.out.println(this.username + " to " + vals[1] + " group: " + messageOut);
-                                                                outDest.println(this.username + " @ " + vals[1] + " group: " + messageOut);
+                                                                
+                                                                String password = Database.GetPass(cur.getSecond());
+                                                                
+                                                                
+                                                                byte[] _key = password.getBytes();
+                                                                RC4 rc4 = new RC4(_key);
+                                                                System.out.println(password);
+                                                                messageOut = this.username + " " + CsPubkey + " " + vals[2];
+                                                                String chiperText = rc4.encrypt(messageOut);
+                                                                 
+                                                                //System.out.println(this.username + " to " + vals[1] + " group: " + messageOut);
+                                                                outDest.println("SUCCESS gm " + chiperText);
                                                                 outDest.flush();
                                                             }
                                                         }

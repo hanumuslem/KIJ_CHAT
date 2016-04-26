@@ -120,6 +120,38 @@ public class Read implements Runnable {
                                                 
                                                 log.clear();
                                                 log.add("true");
+                                            }else if(input.split(" ")[1].toLowerCase().equals("gm")){
+                                                 //System.out.println("cek masuk");
+                                                Cipher cipher = Cipher.getInstance("RSA");
+                                                byte[] key = Main.password.getBytes();
+                                                //String passwd=Main.password;
+                                                //System.out.println(passwd);
+                                                RC4 rc4 = new RC4(key);
+                                                String decrypted = rc4.decrypt(input.split(" ")[2]);
+                                                String[] temp = decrypted.split(" ");
+                                                //System.out.println(decrypted);
+                                                
+                                                //spukey
+                                                String username = temp[0];
+                                                String group = input.split(" ")[2];
+                                                byte[] message= Base64.decodeBase64(temp[2]);
+                                                byte[] sigBytes1 = decoder.decodeBuffer(temp[1]);
+                                                
+                                                KeyFactory keyFact = KeyFactory.getInstance("RSA");
+                                                X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(sigBytes1);
+                                                Key SPuKey = keyFact.generatePublic(x509KeySpec);
+                                                //System.out.println(SPuKey);
+                                                
+                                                cipher.init(Cipher.DECRYPT_MODE, SPuKey);
+                                                byte[] plainText = cipher.doFinal(message);
+                                                String message_ = new String(plainText);
+                                                //System.out.println(Main.CPrKey);
+                                                //System.out.println("from: " + username + " @" + group + "group: " + message_);
+                                                System.out.println(username + " <group>: "+message_);
+                                                log.clear();
+                                                log.add("true");
+                                                      
+                                                        
                                             }
                                         }
                                         
@@ -130,6 +162,7 @@ public class Read implements Runnable {
 		catch (Exception e)
 		{
 			e.printStackTrace();//MOST LIKELY WONT BE AN ERROR, GOOD PRACTICE TO CATCH THOUGH
+                        
 		} 
 	}
 }
