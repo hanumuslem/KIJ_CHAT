@@ -39,10 +39,20 @@ public class Write implements Runnable {
 			{						
 				String input = chat.nextLine();	//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                 if (input.contains("login")) {
+//                    String[] tes = input.split(" ");
+//                    tes[2]=simple_MD5.MD5(tes[2]);
+//                    List<String> list = Arrays.asList(tes);
+//                    input = String.join(" ", list);
+                    
                     String[] tes = input.split(" ");
-                    tes[2]=simple_MD5.MD5(tes[2]);
-                    List<String> list = Arrays.asList(tes);
-                    input = String.join(" ", list);
+                    String username=tes[1];
+                    String password=simple_MD5.MD5(tes[2]);
+                    
+                    byte[] key = password.getBytes();
+                    RC4 rc4 = new RC4(key);
+                    String cipherText = rc4.encrypt(username);
+                    
+                    input=tes[0] + " " + cipherText;
                     System.out.println(input);
                 }
 

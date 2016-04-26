@@ -60,9 +60,20 @@ public class Client implements Runnable{
                                         
                                         // param LOGIN <userName> <pass>
                                         if (input.split(" ")[0].toLowerCase().equals("login") == true) {
+                                            System.out.println(input);
                                             String[] vals = input.split(" ");
-                                            
-                                            if (this._userlist.contains(new Pair(vals[1], vals[2])) == true) {
+                                            boolean flag = false;
+                                            for (Pair<String,String> x : this._userlist){
+                                                byte[] key = x.getSecond().getBytes();
+                                                RC4 rc4 = new RC4(key);
+                                                String decrypted = rc4.decrypt(vals[1]);
+                                                if(x.getFirst().equals(decrypted)==true){
+                                                    
+                                                    flag=true;
+                                                }
+                                            }
+//                                            if (this._userlist.contains(new Pair(vals[1], vals[2])) == true) {
+                                            if (flag == true) {
                                                 if (this.login == false) {
                                                     this._loginlist.add(new Pair(this.socket, vals[1]));
                                                     this.username = vals[1];
@@ -72,8 +83,15 @@ public class Client implements Runnable{
                                                     KeyPair keyPair = KeyPairGenerator.getInstance(algorithm).generateKeyPair();
                                                     Key publicKey = keyPair.getPublic();
                                                     Key privatKey = keyPair.getPrivate();
-                                                    System.out.println(keyPair.getPublic());
-                                                    System.out.println(keyPair.getPrivate());
+                                                    
+
+                                                    BASE64Encoder encoder = new BASE64Encoder();
+                                                    
+                                                    byte[] array1 = publicKey.getEncoded();
+                                                    String Pukey = encoder.encode(array1);
+
+                                                    byte[] array2 = privatKey.getEncoded();
+                                                    String Prkey = encoder.encode(array2);
                                                     
 /*                                                    //public to string
                                                     byte[] array = publicKey.getEncoded();
@@ -90,23 +108,23 @@ public class Client implements Runnable{
                                                     Key pubKey2 = keyFact.generatePublic(x509KeySpec);
                                                     System.out.println(pubKey2);
 */                                                    
-                                                    //public to string
-                                                    byte[] array = privatKey.getEncoded();
-                                                    BASE64Encoder encoder = new BASE64Encoder();
-                                                    String Pkey = encoder.encode(array);
-                                                    System.out.println(Pkey);
-                                                    
-                                                  //Convert PublicKeyString to Byte Stream
-                                                    BASE64Decoder decoder = new BASE64Decoder();
-                                                    byte[] sigBytes2 = decoder.decodeBuffer(Pkey);
-                                                    // Convert the public key bytes into a PublicKey object
-                                                    PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(sigBytes2);
-                                                    KeyFactory keyFact = KeyFactory.getInstance("RSA");
-                                                    Key privKey2 = keyFact.generatePrivate(pkcs8KeySpec);
-                                                    System.out.println(privKey2);
+//                                                    //public to string
+//                                                    byte[] array = privatKey.getEncoded();
+//                                                    BASE64Encoder encoder = new BASE64Encoder();
+//                                                    String Pkey = encoder.encode(array);
+//                                                    System.out.println(Pkey);
+//                                                    
+//                                                  //Convert PublicKeyString to Byte Stream
+//                                                    BASE64Decoder decoder = new BASE64Decoder();
+//                                                    byte[] sigBytes2 = decoder.decodeBuffer(Pkey);
+//                                                    // Convert the public key bytes into a PublicKey object
+//                                                    PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(sigBytes2);
+//                                                    KeyFactory keyFact = KeyFactory.getInstance("RSA");
+//                                                    Key privKey2 = keyFact.generatePrivate(pkcs8KeySpec);
+//                                                    System.out.println(privKey2);
 
                                                     
-                                                    Database.updatePublic(this.username,Pkey);
+                                                    Database.updatePublic(this.username,Pukey);
                                                     
                                                     System.out.println("Users count: " + this._loginlist.size());
                                                     out.println("SUCCESS login");

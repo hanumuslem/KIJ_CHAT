@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.util.ArrayList;
 
 /** original ->http://www.dreamincode.net/forums/topic/262304-simple-client-and-server-chat-program/
@@ -18,8 +21,8 @@ public class Main {
     public static final ArrayList<Pair<String,String>> _userlist = user.getUserList();
     public static final Group group = new Group();
     public static final ArrayList<Pair<String,String>> _grouplist = group.getGroupList();
-    
-    
+    public static Key SPuKey = null;
+    public static Key SPrKey = null;
  
 
 	public static void main(String[] args) throws IOException {
@@ -29,7 +32,13 @@ public class Main {
 			final int PORT = 6677;//SET NEW CONSTANT VARIABLE: PORT
 			ServerSocket server = new ServerSocket(PORT); //SET PORT NUMBER
 			System.out.println("Waiting for clients...");//AT THE START PRINT THIS
-		
+
+                        String algorithm = "RSA";
+                        KeyPair keyPair = KeyPairGenerator.getInstance(algorithm).generateKeyPair();
+                        SPuKey = keyPair.getPublic();
+                        SPrKey = keyPair.getPrivate();
+                        System.out.println(SPuKey);
+                        System.out.println(SPrKey);
 			while (true)//WHILE THE PROGRAM IS RUNNING
 			{					
 				
