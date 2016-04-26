@@ -87,6 +87,17 @@ public class Write implements Runnable {
                     
                     input=tes[0] + " " + cipherText;
                     //System.out.println(input);
+                }if(input.contains("cg")){
+                    
+                    String[] tes = input.split(" ");
+                    
+                    String group_name = tes[1];
+                    byte[] key = Main.password.getBytes();
+                    //enkripsi
+                    RC4 rc4 = new RC4(key);
+                    String cipherText = rc4.encrypt(group_name);
+                    input=tes[0] + " " + cipherText;
+                                    
                 }
 				out.println(input);//SEND IT TO THE SERVER
 				out.flush();//FLUSH THE STREAM

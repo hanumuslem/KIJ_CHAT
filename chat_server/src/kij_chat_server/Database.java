@@ -131,6 +131,94 @@ public class Database {
        
        return hasildata;
    }
+  public static String[][] getAllGroup()
+   {
+       String[][] hasildata=new String[20][2];
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)) {
+           String sql="SELECT nama_group, username FROM `group`";
+           PreparedStatement statement=conn.prepareStatement(sql);
+           ResultSet result = statement.executeQuery();
+           int count=0;
+               while (result.next()){
+                   
+                   hasildata[count][0]=result.getString(1);
+                   hasildata[count][1]=result.getString(2);
+                   count++;
+                   //System.out.println(hasildata[0]+" "+hasildata[1]+" "+hasildata[2]+"\n");
+               }
+           
+       } catch (SQLException ex) {
+           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       
+       return hasildata;
+   }
 
+   public static String GetKeyGroup(String _group)
+   {
+       String hasildata=null;
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)) {
+           String sql="SELECT `key` FROM `group` WHERE nama_group=?";
+           PreparedStatement statement=conn.prepareStatement(sql);
+           statement.setString(1, _group);
+           ResultSet result = statement.executeQuery();
+           //System.out.println(_username);
+           int count=0;
+               while (result.next()){
+                   count++;
+                   hasildata=result.getString(1);
+                   //System.out.println(hasildata);
+                   //System.out.println(hasildata[0]+" "+hasildata[1]+" "+hasildata[2]+"\n");
+               }
+           
+       } catch (SQLException ex) {
+           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       
+       return hasildata;
+   }
+   public static void updateKey(String _group, String _public_key)
+   {
+       
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)) {
+           
+           String sql1="UPDATE `group` SET `key`=? WHERE nama_group= ? ";
+           PreparedStatement statement=conn.prepareStatement(sql1);
+           statement.setString(1, _public_key);
+           statement.setString(2, _group);
+           
+           
+           //System.out.println(statement);
+           statement.executeUpdate();
+                      
+
+           
+       } catch (SQLException ex) {
+           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       
+   }
+   
+      public static void insertGroup(String _group, String _username)
+   {
+       
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)) {
+           
+           String sql1="INSERT INTO `group` (nama_group,username)VALUES (?,?);";
+           PreparedStatement statement=conn.prepareStatement(sql1);
+           statement.setString(1, _group);
+           statement.setString(2, _username);
+           
+           
+           //System.out.println(statement);
+           statement.executeUpdate();
+                      
+
+           
+       } catch (SQLException ex) {
+           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       
+   }
 
 }

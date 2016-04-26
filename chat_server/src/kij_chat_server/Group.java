@@ -13,14 +13,17 @@ import java.util.ArrayList;
  */
 public class Group {
     // Group-User list
+    private String hasil[][];
     private ArrayList<Pair<String,String>> _grouplist = new ArrayList<Pair<String,String>>();
     
     Group() {
-        _grouplist.add(new Pair("Admin", "Admin"));
-        _grouplist.add(new Pair("Admin", "Andi"));
-        _grouplist.add(new Pair("User", "Budi"));
-        _grouplist.add(new Pair("User", "Rudi"));
-        _grouplist.add(new Pair("User", "Luci"));
+       hasil = Database.getAllGroup();
+    	for( String[] x : hasil){
+    		if(x[0]!=null){
+        		_grouplist.add(new Pair(x[0],x[1]));   
+                        System.out.println(x[0] + x[1]);
+    		}
+    	}
     }
     
     Group(ArrayList<Pair<String,String>> _grouplist) {
@@ -36,7 +39,7 @@ public class Group {
     
     public int updateGroup(String groupName, String user, ArrayList<Pair<String,String>> _grouplist) {
         _grouplist.add(new Pair(groupName, user));
-        
+        Database.insertGroup(groupName, user);
         return this.countGroup();
     }
     
