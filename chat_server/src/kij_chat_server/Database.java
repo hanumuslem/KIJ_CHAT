@@ -83,6 +83,7 @@ public class Database {
        }
        
    }
+   
  public static String GetCPu(String _username)
    {
        String hasildata=null;
@@ -96,7 +97,31 @@ public class Database {
                while (result.next()){
                    count++;
                    hasildata=result.getString(1);
-                   System.out.println(hasildata);
+                   //System.out.println(hasildata);
+                   //System.out.println(hasildata[0]+" "+hasildata[1]+" "+hasildata[2]+"\n");
+               }
+           
+       } catch (SQLException ex) {
+           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       
+       return hasildata;
+   }
+
+  public static String GetPass(String _username)
+   {
+       String hasildata=null;
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)) {
+           String sql="SELECT password FROM user WHERE username=?";
+           PreparedStatement statement=conn.prepareStatement(sql);
+           statement.setString(1, _username);
+           ResultSet result = statement.executeQuery();
+           //System.out.println(_username);
+           int count=0;
+               while (result.next()){
+                   count++;
+                   hasildata=result.getString(1);
+                   //System.out.println(hasildata);
                    //System.out.println(hasildata[0]+" "+hasildata[1]+" "+hasildata[2]+"\n");
                }
            

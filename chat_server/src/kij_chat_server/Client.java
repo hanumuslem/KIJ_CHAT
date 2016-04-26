@@ -10,6 +10,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.crypto.Cipher;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -61,7 +62,7 @@ public class Client implements Runnable{
                                         
                                         // param LOGIN <userName> <pass>
                                         if (input.split(" ")[0].toLowerCase().equals("login") == true) {
-                                            System.out.println(input);
+                                            //System.out.println(input);
                                             
                                             String[] vals = input.split(" ");
                                             
@@ -79,10 +80,10 @@ public class Client implements Runnable{
 //                                            if (this._userlist.contains(new Pair(vals[1], vals[2])) == true) {
                                             if (flag == true) {
                                                 if (this.login == false) {
-                                                    this._loginlist.add(new Pair(this.socket, vals[1]));
+                                                    this._loginlist.add(new Pair(this.socket, this.username));
                                                     //this.username = vals[1];
                                                     this.login = true;
-                                                    System.out.println(Database.GetCPu(this.username));
+                                                    //System.out.println(Database.GetCPu(this.username));
                                                     String algorithm = "RSA";
                                                     KeyPair keyPair = KeyPairGenerator.getInstance(algorithm).generateKeyPair();
                                                     Key publicKey = keyPair.getPublic();
@@ -90,6 +91,7 @@ public class Client implements Runnable{
                                                     
 
                                                     BASE64Encoder encoder = new BASE64Encoder();
+                                                    //byte[] tes = "Burhanudin rasyid gila".getBytes();
                                                     
                                                     byte[] array1 = publicKey.getEncoded();
                                                     String Pukey = encoder.encode(array1);
@@ -97,7 +99,14 @@ public class Client implements Runnable{
                                                     byte[] array2 = privatKey.getEncoded();
                                                     String Prkey = encoder.encode(array2);
                                                     
-
+//                                                    Cipher cipher = Cipher.getInstance("RSA");
+//                                                    cipher.init(Cipher.ENCRYPT_MODE, privatKey);
+//                                                    byte[] cipherText_ = cipher.doFinal(tes);
+//                                                    System.out.println("cipher: " + new String(cipherText_));
+//                                                    
+//                                                    cipher.init(Cipher.DECRYPT_MODE, publicKey);
+//                                                    byte[] plainText = cipher.doFinal(cipherText_);
+//                                                    System.out.println("plain : " + new String(plainText));
 
                                                     
                                                     Database.updatePublic(this.username,Pukey);
@@ -141,15 +150,26 @@ public class Client implements Runnable{
                                             
                                             boolean exist = false;
                                             
+                                            byte[] key = password.getBytes();
+                                            RC4 rc4 = new RC4(key);
+                                
+                                            String decrypted = rc4.decrypt(vals[1]);                                            
+                                            //System.out.println(decrypted);
+                                            String message=decrypted.split(" ")[0];
+                                            String user_dest=decrypted.split(" ")[1];
+                                            
                                             for(Pair<Socket, String> cur : _loginlist) {
-                                                if (cur.getSecond().equals(vals[1])) {
+                                                //System.out.println(cur.getSecond()+" "+user_dest);
+                                                if (cur.getSecond().equals(user_dest)) {
                                                     PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
-                                                    String messageOut = "";
-                                                    for (int j = 2; j<vals.length; j++) {
-                                                        messageOut += vals[j] + " ";
-                                                    }
-                                                    System.out.println(this.username + " to " + vals[1] + " : " + messageOut);
-                                                    outDest.println(this.username + ": " + messageOut);
+                                                    
+                                                    //System.out.println(this.username + " to " + user_dest  + " : " + message);
+                                                    byte[] key_ = Database.GetPass(user_dest).getBytes();                                                
+                                                    rc4 = new RC4(key_);
+                                                    
+                                                    String temp =this.username + " " + message + " " + Database.GetCPu(this.username);
+                                                    String cipherText = rc4.encrypt(temp); 
+                                                    outDest.println("SUCCESS pm " +cipherText);
                                                     outDest.flush();
                                                     exist = true;
                                                 }

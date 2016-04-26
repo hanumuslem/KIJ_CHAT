@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import javax.crypto.Cipher;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  *
@@ -22,6 +24,7 @@ public class Write implements Runnable {
         private PrintWriter out;
         boolean keepGoing = true;
         ArrayList<String> log;
+        
 	
 	public Write(Scanner chat, PrintWriter out, ArrayList<String> log)
 	{
@@ -39,11 +42,8 @@ public class Write implements Runnable {
 			{						
 				String input = chat.nextLine();	//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                 if (input.contains("login")) {
-//                    String[] tes = input.split(" ");
-//                    tes[2]=simple_MD5.MD5(tes[2]);
-//                    List<String> list = Arrays.asList(tes);
-//                    input = String.join(" ", list);
-                    
+                   
+
                     String[] tes = input.split(" ");
                     Main.username=tes[1];
                     Main.password=simple_MD5.MD5(tes[2]);
@@ -53,9 +53,41 @@ public class Write implements Runnable {
                     String cipherText = rc4.encrypt(Main.username);
                     
                     input=tes[0] + " " + cipherText;
-                    System.out.println(input);
+                    //System.out.println(input);
                 }
-
+                if (input.contains("pm")) {
+                     Cipher cipher = Cipher.getInstance("RSA");   
+                     
+                    String[] tes = input.split(" ");
+                    String username_source=tes[1];
+                    String message="";
+                    for (int j = 2; j<tes.length; j++) {
+                        if(j==tes.length-1){
+                        message += tes[j];
+                        }else{
+                        message += tes[j] + " ";                        
+                        }
+                    }
+                    
+                    
+                    byte[] message_ = message.getBytes();                    
+                    byte[] key = Main.password.getBytes();
+                    
+                    //rsa
+                    cipher.init(Cipher.ENCRYPT_MODE, Main.CPrKey);
+                    byte[] cipherText_ = cipher.doFinal(message_);
+                    //System.out.println("cipher: " + new String(cipherText_));
+                    
+                    String message__ = Base64.encodeBase64String(cipherText_);
+                    //System.out.println(message);
+                    //System.out.println(message__);
+                    
+                    RC4 rc4 = new RC4(key);
+                    String cipherText = rc4.encrypt(message__+" "+username_source);
+                    
+                    input=tes[0] + " " + cipherText;
+                    //System.out.println(input);
+                }
 				out.println(input);//SEND IT TO THE SERVER
 				out.flush();//FLUSH THE STREAM
                                 
