@@ -62,7 +62,9 @@ public class Client implements Runnable{
                                         // param LOGIN <userName> <pass>
                                         if (input.split(" ")[0].toLowerCase().equals("login") == true) {
                                             System.out.println(input);
+                                            
                                             String[] vals = input.split(" ");
+                                            
                                             boolean flag = false;
                                             for (Pair<String,String> x : this._userlist){
                                                 byte[] key = x.getSecond().getBytes();
@@ -71,15 +73,16 @@ public class Client implements Runnable{
                                                 if(x.getFirst().equals(decrypted)==true){
                                                     password = x.getSecond();
                                                     flag=true;
+                                                    this.username = x.getFirst();
                                                 }
                                             }
 //                                            if (this._userlist.contains(new Pair(vals[1], vals[2])) == true) {
                                             if (flag == true) {
                                                 if (this.login == false) {
                                                     this._loginlist.add(new Pair(this.socket, vals[1]));
-                                                    this.username = vals[1];
+                                                    //this.username = vals[1];
                                                     this.login = true;
-                                                    
+                                                    System.out.println(Database.GetCPu(this.username));
                                                     String algorithm = "RSA";
                                                     KeyPair keyPair = KeyPairGenerator.getInstance(algorithm).generateKeyPair();
                                                     Key publicKey = keyPair.getPublic();
