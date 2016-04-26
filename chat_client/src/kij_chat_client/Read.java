@@ -44,7 +44,7 @@ public class Read implements Runnable {
 				if(this.in.hasNext()) {
                                                                    //IF THE SERVER SENT US SOMETHING
                                         input = this.in.nextLine();
-                                        //System.out.println(input);//PRINT IT OUT
+                                        System.out.println(input);//PRINT IT OUT
                                         if (input.split(" ")[0].toLowerCase().equals("success")) {
                                             if (input.split(" ")[1].toLowerCase().equals("logout")) {
                                                 keepGoing = false;
@@ -62,7 +62,7 @@ public class Read implements Runnable {
                                                 PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(sigBytes2);
                                                 Main.CPrKey = keyFact.generatePrivate(pkcs8KeySpec);
                                                 //System.out.println(Main.CPrKey);
-                                                System.out.println(input);
+                                               // System.out.println(input);
                                                 log.clear();
                                                 log.add("true");
                                             }else if (input.split(" ")[1].toLowerCase().equals("pm")) {
@@ -89,6 +89,34 @@ public class Read implements Runnable {
                                                 String message_ = new String(plainText);
                                                 //System.out.println(Main.CPrKey);
                                                 System.out.println(username + " : "+message_);
+                                                
+                                                log.clear();
+                                                log.add("true");
+                                            }
+                                            else if (input.split(" ")[1].toLowerCase().equals("bm")) {
+                                                //System.out.println(input);
+                                                Cipher cipher = Cipher.getInstance("RSA");
+                                                byte[] key = Main.password.getBytes();
+                                                RC4 rc4 = new RC4(key);
+                                                String decrypted = rc4.decrypt(input.split(" ")[2]);
+                                                String[] temp = decrypted.split(" ");
+                                               // System.out.println(decrypted);
+                                                
+                                                //spukey
+                                                String username = temp[0];
+                                                byte[] message= Base64.decodeBase64(temp[1]);
+                                                byte[] sigBytes1 = decoder.decodeBuffer(temp[2]);
+                                                
+                                                KeyFactory keyFact = KeyFactory.getInstance("RSA");
+                                                X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(sigBytes1);
+                                                Key SPuKey = keyFact.generatePublic(x509KeySpec);
+                                                //System.out.println(SPuKey);
+                                                
+                                                cipher.init(Cipher.DECRYPT_MODE, SPuKey);
+                                                byte[] plainText = cipher.doFinal(message);
+                                                String message_ = new String(plainText);
+                                                //System.out.println(Main.CPrKey);
+                                                System.out.println(username + " <broadcast>: "+message_);
                                                 
                                                 log.clear();
                                                 log.add("true");

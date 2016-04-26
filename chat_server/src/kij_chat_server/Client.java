@@ -163,7 +163,7 @@ public class Client implements Runnable{
                                                 if (cur.getSecond().equals(user_dest)) {
                                                     PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
                                                     
-                                                    //System.out.println(this.username + " to " + user_dest  + " : " + message);
+                                                    System.out.println(this.username + " to " + user_dest  + " : " + message);
                                                     byte[] key_ = Database.GetPass(user_dest).getBytes();                                                
                                                     rc4 = new RC4(key_);
                                                     
@@ -247,16 +247,26 @@ public class Client implements Runnable{
                                         // param BM <message>
                                         if (input.split(" ")[0].toLowerCase().equals("bm") == true) {
                                             String[] vals = input.split(" ");
+                                            System.out.println(input);
+                                            boolean exist = false;
                                             
+                                           
                                             for(Pair<Socket, String> cur : _loginlist) {
                                                 if (!cur.getFirst().equals(socket)) {
                                                     PrintWriter outDest = new PrintWriter(cur.getFirst().getOutputStream());
-                                                    String messageOut = "";
-                                                    for (int j = 1; j<vals.length; j++) {
-                                                        messageOut += vals[j] + " ";
-                                                    }
-                                                    System.out.println(this.username + " to alls: " + messageOut);
-                                                    outDest.println(this.username + " <BROADCAST>: " + messageOut);
+                                                    //System.out.println(cur.getSecond());
+                                                    String password = Database.GetPass(cur.getSecond());
+                                                    String CsPubkey = Database.GetCPu(this.username);
+                                                    byte[] _key = password.getBytes();
+                                                    RC4 rc4 = new RC4(_key);
+                                                    String messageOut = this.username + " " + vals[1] + " " + CsPubkey;
+                                                    String chiperText = rc4.encrypt(messageOut);
+                                                    //for (int j = 1; j<vals.length; j++) {
+                                                      //  messageOut += vals[j] + " ";
+                                                    //}
+                                                    System.out.println(this.username + " to alls: " + chiperText);
+                                                    //outDest.println(this.username + " <BROADCAST>: " + messageOut);
+                                                    outDest.println("SUCCESS bm " + chiperText);
                                                     outDest.flush();
                                                 }
                                             }

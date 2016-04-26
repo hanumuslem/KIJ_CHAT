@@ -98,6 +98,34 @@ public class Write implements Runnable {
                     String cipherText = rc4.encrypt(group_name);
                     input=tes[0] + " " + cipherText;
                                     
+                }if(input.contains("bm")){
+                     Cipher cipher = Cipher.getInstance("RSA");   
+                     
+                    String[] tes = input.split(" ");
+                    //String username_source=tes[1];
+                    String message="";
+                    for (int j = 1; j<tes.length; j++) {
+                        if(j==tes.length-1){
+                        message += tes[j];
+                        }else{
+                        message += tes[j] + " ";                        
+                        }
+                    }
+                    
+                    
+                    byte[] message_ = message.getBytes();                    
+                    //byte[] key = Main.password.getBytes();
+                    
+                    //rsa
+                    cipher.init(Cipher.ENCRYPT_MODE, Main.CPrKey);
+                    byte[] cipherText_ = cipher.doFinal(message_);
+                    //System.out.println("cipher: " + new String(cipherText_));
+                    
+                    String message__ = Base64.encodeBase64String(cipherText_);
+                    
+                    
+                    input=tes[0] + " " + message__;
+                    //System.out.println(">>>>>>>>> " + cipherText_ + " <<<<<<<<<<");
                 }
 				out.println(input);//SEND IT TO THE SERVER
 				out.flush();//FLUSH THE STREAM
