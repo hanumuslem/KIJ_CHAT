@@ -9,9 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Database {
-   private static final String dbURL = "jdbc:mysql://localhost:3306/kij";
+   private static final String dbURL = "jdbc:mysql://localhost:3434/kij";
    private static final String username = "root";
-   private static final String password = "";
+   private static final String password = "kebersamaan";
  
 
    public static String[][] getAll()

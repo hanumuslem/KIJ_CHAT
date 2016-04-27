@@ -238,7 +238,7 @@ public class Client implements Runnable{
                                                                 
                                                                 byte[] _key = password.getBytes();
                                                                 RC4 rc4 = new RC4(_key);
-                                                                System.out.println(password);
+                                                                //System.out.println(password);
                                                                 messageOut = this.username + " " + CsPubkey + " " + vals[2];
                                                                 String chiperText = rc4.encrypt(messageOut);
                                                                  
